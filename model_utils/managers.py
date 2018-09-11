@@ -219,7 +219,9 @@ class InheritanceQuerySetMixin(object):
 
         try:
             node = getattr(obj, rel)
-        except ObjectDoesNotExist:
+        except (ObjectDoesNotExist, AttributeError): 
+            # We must also catch attribute error in case using eav manager as well, otherwise will break,
+            # really just want to continue onto the next subclass check, not break...
             return None
         if s:
             child = self._get_sub_obj_recurse(node, s)
